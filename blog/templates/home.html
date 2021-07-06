@@ -1,29 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLOG</title>
-    <style>
-        body{text-align: center;}
-    </style>
-</head>
-<body>
-    <h1>Blog Project</h1>
-    <div>
-        <a href="{%url 'new'%}">write blog</a>
-    </div>
-    </div>
+{% extends 'base.html' %}
+{% block content %}
+
+    {% if not user.is_authenticated %}
+        <h3>로그인 해주세요</h3>
+    {% endif %}
+    {% if user.is_authenticated %}
+        <h3>환영합니다 {{user.nickname}}님</h3><br>
+    {% endif %}
+    <a href="?search=true&writer={{user.nickname}}">내가 쓴 글</a><br>
+    </div class="container">
     {% for blog in blogs%}
         <div>
-        <h3>{{blog.title}}</h3>
-        {{blog.id}}
+        <br>
+        <h6>{{blog.title}}</h6>
+        
         {{blog.writer}}
         {{blog.summary}} <a href="{%url 'detail' blog.id %}">...more</a>
-        </div>
         <br>
+        </div>
     {% endfor %}
     </div>
-</body>
-</html>
+
+    {% if blogs.has_previous %}
+        <a href="?page=1">처음</a>
+        <a href="?page={{blogs.previous_page_number}}">이전</a>
+    {% endif %}
+
+    <span>{{blogs.number}}</span>
+    <span>of</span>
+    <span>{{blogs.paginator.num_pages}}</span>
+
+    {% if blogs.has_next %}
+        <a href="?page={{blogs.next_page_number}}">다음</a>
+        <a href="?page={{blogs.paginator.num_pages}}">마지막</a>
+    {% endif %}
+
+{% endblock %}
